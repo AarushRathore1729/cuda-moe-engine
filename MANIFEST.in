@@ -1,0 +1,10 @@
+include README.md LICENSE THIRD_PARTY_NOTICES.md .gitignore .nojekyll
+include .github/workflows/ci.yml
+recursive-include src/moe_dispatch/csrc *.cpp *.cu
+recursive-include docs *.md *.json
+recursive-include assets *.png *.svg
+recursive-include benchmarks *.json *.csv *.html *.py *.cu *.cpp *.log
+recursive-include demo *.html
+recursive-include scripts *.py *.cjs
+recursive-include examples *.py
+recursive-include notebooks *.ipynb

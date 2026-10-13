@@ -1,0 +1,21 @@
+{
+  "checkpoint": "v0.2.0 A100 eager, graph replay, larger model-shaped and smoke evidence",
+  "sha256": {
+    "block_report.csv": "570558b24d28a16f4368a1cb82345c58b68f4c0f2dbe60bdbc97b1bfd598a91e",
+    "block_report.html": "f90ad0208ec30355aacc0de255b94c92095b8aa70334098f3ddc4bc587018c29",
+    "block_results.json": "403513a364457ff0f2a6d7865536f44fce536cb6990ad87eb1b2f183c9fc9c9d",
+    "graphs/block_report.csv": "0d8c59be4d89dbca320f760a1c8f32cb3a52b4a6be930262a281eba7c98d93b7",
+    "graphs/block_report.html": "8ca796d5e01a52d1a7a87a465febdee0c0a24253518a2d04c40b42428f9dec43",
+    "graphs/block_results.json": "1eacb9948d74e7a05b6262e4d2468b3caf14aa1c741a6eac7322f1749dfa13ae",
+    "model/block_report.csv": "3e9e486389b63a316b70358c8d9f0a5f55905ef91d68079b2e155fad505aa41e",
+    "model/block_report.html": "eb3ed4dd3e34f6f71b5777b7a4366cc0d8d8d10bb136cb1344420cc7136fed5e",
+    "model/block_results.json": "5a2d2d3e15d2c9cc5bfbb4786fc8f36317682cecd085cebc3eb6ee0d6ef9409c",
+    "moe_block_trace.json": "a6c0b053119fad02b3561ed7fbbaef7ac9bff88c98ca8d4c98073175f20d2d4f",
+    "optional_run.log": "50630c51d109b966ad0468d67d6211af905292b522e2fa903d63fbd694f2c28e",
+    "run.log": "499a7e90546b966c338cfbfd95f44d9ad79d70a1d562506d96b31cc762302beb",
+    "smoke/block_report.csv": "b8900e9849408d50e730cb8151da5916c3530087e993cb4936090cec3d352666",
+    "smoke/block_report.html": "50cbb1ce1fb0d31c81b06f9c9a91f05ff9c0f20c52c94ed5d027c1c57f4770c3",
+    "smoke/block_results.json": "a30c109e0ec984ce03a6e67ff9b411041a1b231a2a8c78092135361bbcec65b2",
+    "summary.json": "ffdb0afddba3f62853fd74ca42fdf1119ebf7ff49a4a2e94d857aea9b7ac4085"
+  }
+}

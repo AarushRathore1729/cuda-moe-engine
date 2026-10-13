@@ -1,0 +1,15 @@
+{
+  "kind": "recorded_gpu_run",
+  "original_archive": "cuda_moe_dispatch_bundle.zip",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "run_time_utc": "2026-10-12T23:14:13Z",
+  "sha256": {
+    "source/runner.py": "7a4231ba3e1653a5b24b953d79911dd04766419bd9e17d89ea61e0c0f036ebdd",
+    "source/csrc/dispatch.cu": "a667e49c4c59536f417777bfd68a71358a54e6c6c05e9879ed4aecbbbf9d5056",
+    "source/csrc/bindings.cpp": "d6d3615fab97d3e6795fa4388cd82b1fff1b4fba8f8454f00d22986df8c47aa6",
+    "results.json": "87876cc35b2a5adf13f44ba8e3d2fc22a4d1de8d2b844e95d764bba25fa3e37f",
+    "results.csv": "a402a4ba38c5aeb68464409c60eeb567cb1be87dcb248d8867408ede48e1464e",
+    "report.html": "e89d2086ebc4f7a9e86f949ded6fa558362749164d724fdb0c71a31ae05a1b7a"
+  },
+  "note": "Results belong to the archived runner preserved in source/. The v0.2 package extends the kernels with BF16/aligned dispatch, fused routing, and SwiGLU; full-forward measurements require a new GPU run."
+}

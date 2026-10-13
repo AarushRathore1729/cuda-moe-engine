@@ -1,0 +1,103 @@
+{
+  "quick": {
+    "gpu": "NVIDIA A100-SXM4-40GB",
+    "configurations": 8,
+    "forward_comparisons_passed": 24,
+    "source_hashes_verified": 22,
+    "timing_rows_verified": 120,
+    "median_forward_ratio": 3.1677670384043486,
+    "min_forward_ratio": 1.4379999382998823,
+    "max_forward_ratio": 3.3491803216116462,
+    "max_absolute_error": 0.0078125,
+    "max_relative_l2_error": 0.0002142672601621598,
+    "expert_backend": "triton",
+    "graphs_requested": false
+  },
+  "smoke": {
+    "gpu": "NVIDIA A100-SXM4-40GB",
+    "configurations": 2,
+    "forward_comparisons_passed": 6,
+    "source_hashes_verified": 22,
+    "timing_rows_verified": 30,
+    "median_forward_ratio": 3.2807822274612626,
+    "min_forward_ratio": 3.1169415931489493,
+    "max_forward_ratio": 3.4446228617735763,
+    "max_absolute_error": 0.0078125,
+    "max_relative_l2_error": 0.0002142672601621598,
+    "expert_backend": "triton",
+    "graphs_requested": false
+  },
+  "optional": {
+    "graphs": {
+      "gpu": "NVIDIA A100-SXM4-40GB",
+      "configurations": 8,
+      "forward_comparisons_passed": 24,
+      "source_hashes_verified": 22,
+      "timing_rows_verified": 144,
+      "median_forward_ratio": 3.0833333821184894,
+      "min_forward_ratio": 1.4456630589908845,
+      "max_forward_ratio": 3.2800631626791272,
+      "max_absolute_error": 0.0078125,
+      "max_relative_l2_error": 0.0002142672601621598,
+      "expert_backend": "triton",
+      "graphs_requested": true,
+      "graph_replay_checks_passed": 24,
+      "complete_graph_comparison_cases": 8,
+      "median_graph_ratio": 1.7359649579653869,
+      "min_graph_ratio": 1.1462140704479862,
+      "max_graph_ratio": 2.5294116891769103
+    },
+    "model": {
+      "gpu": "NVIDIA A100-SXM4-40GB",
+      "configurations": 2,
+      "forward_comparisons_passed": 6,
+      "source_hashes_verified": 22,
+      "timing_rows_verified": 30,
+      "median_forward_ratio": 1.064692397779477,
+      "min_forward_ratio": 1.0594986732339242,
+      "max_forward_ratio": 1.06988612232503,
+      "max_absolute_error": 0.015625,
+      "max_relative_l2_error": 0.003167108166962862,
+      "expert_backend": "triton",
+      "graphs_requested": false
+    }
+  },
+  "transport": {
+    "gpu": "NVIDIA A100-SXM4-40GB",
+    "configurations": 12,
+    "correctness_checks": 36,
+    "method": "CUDA-event GPU stream elapsed time; per-call samples after warmup. Both paths reuse workspaces; count reset is timed. Compilation, input generation, router, validation, and expert computation are excluded. Small cases include launch gaps.",
+    "stages": {
+      "dispatch": {
+        "median_per_configuration_speedup": 7.315769415525818,
+        "minimum_speedup": 3.758333427314455,
+        "maximum_speedup": 8.06249956420047,
+        "maximum_latency_reduction_vs_scalar_cuda": 0.34883720044840205,
+        "minimum_persistent_workspace_reduction": 0.727496893525679,
+        "maximum_persistent_workspace_reduction": 0.7277850809957023
+      },
+      "combine": {
+        "median_per_configuration_speedup": 4.0,
+        "minimum_speedup": 3.6956520776338335,
+        "maximum_speedup": 4.741935510370293,
+        "maximum_latency_reduction_vs_scalar_cuda": 0.012987017895738195,
+        "minimum_persistent_workspace_reduction": 0.727496893525679,
+        "maximum_persistent_workspace_reduction": 0.7277850809957023
+      },
+      "dispatch+combine": {
+        "median_per_configuration_speedup": 6.3632243524850445,
+        "minimum_speedup": 3.2313433046530293,
+        "maximum_speedup": 8.525423537038463,
+        "maximum_latency_reduction_vs_scalar_cuda": 0.19565215672032743,
+        "minimum_persistent_workspace_reduction": 0.727496893525679,
+        "maximum_persistent_workspace_reduction": 0.7277850809957023
+      }
+    }
+  },
+  "recorded_tests": {
+    "cpu_passed": 81,
+    "gpu_passed": 39,
+    "transport_passed": 36
+  },
+  "profiler_gpu_kernel_events": 36
+}

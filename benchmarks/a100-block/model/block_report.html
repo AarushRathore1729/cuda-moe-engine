@@ -1,0 +1,110 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>CUDA MoE — Full Forward</title>
+<style>body{font:15px/1.55 system-ui;background:#f3f5fa;color:#172743;margin:0}
+main{max-width:1100px;margin:35px auto;padding:0 22px}h1{font-size:34px}h2{font-size:19px}
+section,.intro{background:white;border:1px solid #d4deee;padding:24px;border-radius:14px;margin:20px 0}
+.row{display:grid;grid-template-columns:275px 1fr 95px;gap:12px;align-items:center;margin:12px 0}
+.track{height:18px;background:#edf1f8;border-radius:4px;overflow:hidden}.bar{height:100%}
+.c0{background:#7686a1}.c1{background:#9571c9}.c2{background:#3566c7}
+table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;padding:9px;border-bottom:1px solid #dce3ef}
+.note{color:#526179;font-size:13px}pre{white-space:pre-wrap}.scroll{overflow:auto}
+@media(max-width:700px){.row{grid-template-columns:145px 1fr 80px;font-size:12px}h1{font-size:27px}section{padding:16px}}
+</style><body><main><p class="note">C++ / CUDA / PyTorch / grouped expert matmuls</p>
+<h1>MoE Forward Pipeline</h1><div class="intro"><b>NVIDIA A100-SXM4-40GB</b> · BF16 · 2 configurations · backend: triton<p>Median of per-configuration full-forward speed ratios: <b>1.06×</b>.</p><p class="note">One synthetic MoE feedforward block: FP32 router/top-k/softmax, BF16 grouped gate/up GEMM, FP32 SwiGLU math with one BF16 cast, BF16 grouped down GEMM, and FP32 weighted combine. Shared weights and GEMM backend across all variants. This is not complete language-model inference.</p><p class="note">CUDA events after warmup; router/expert computation included in forward. Expert stages include both GEMMs and activation. Per-stage medians are measured in isolation and need not sum to the full-forward median. Compilation and validation are excluded; eager samples can include CPU launch gaps. Persistent buffers exclude shared weights and backend temporary allocations. Optional graph timing is separate.</p></div><section><h2>T=128 · H=4096 · I=14336 · E=8 · balanced</h2><p><b>1.06×</b> measured full-block speed ratio</p><div class="row"><span>PyTorch transport + grouped GEMM</span><div class="track"><div class="bar c0" style="width:100.00%"></div></div><b>4111.87 µs</b></div><div class="row"><span>CUDA transport + grouped GEMM</span><div class="track"><div class="bar c1" style="width:97.71%"></div></div><b>4017.66 µs</b></div><div class="row"><span>CUDA + fused routing/SwiGLU</span><div class="track"><div class="bar c2" style="width:94.38%"></div></div><b>3880.96 µs</b></div><details><summary>Isolated stages and full forward (µs)</summary><div class="scroll"><table><tr><th>Stage</th><th>PyTorch</th><th>CUDA</th><th>CUDA + fused routing/SwiGLU</th></tr><tr><td>router</td><td>162.82</td><td>159.74</td><td>80.90</td></tr><tr><td>dispatch</td><td>462.85</td><td>28.67</td><td>28.67</td></tr><tr><td>experts</td><td>4300.80</td><td>3898.37</td><td>3787.78</td></tr><tr><td>combine</td><td>72.70</td><td>23.55</td><td>23.55</td></tr><tr><td>forward</td><td>4111.87</td><td>4017.66</td><td>3880.96</td></tr></table></div><p class="note">Stages are measured separately; their medians need not sum to forward latency.</p></details></section><section><h2>T=256 · H=4096 · I=14336 · E=8 · skewed</h2><p><b>1.07×</b> measured full-block speed ratio</p><div class="row"><span>PyTorch transport + grouped GEMM</span><div class="track"><div class="bar c0" style="width:100.00%"></div></div><b>5580.80 µs</b></div><div class="row"><span>CUDA transport + grouped GEMM</span><div class="track"><div class="bar c1" style="width:98.02%"></div></div><b>5470.21 µs</b></div><div class="row"><span>CUDA + fused routing/SwiGLU</span><div class="track"><div class="bar c2" style="width:93.47%"></div></div><b>5216.26 µs</b></div><details><summary>Isolated stages and full forward (µs)</summary><div class="scroll"><table><tr><th>Stage</th><th>PyTorch</th><th>CUDA</th><th>CUDA + fused routing/SwiGLU</th></tr><tr><td>router</td><td>160.77</td><td>160.26</td><td>77.82</td></tr><tr><td>dispatch</td><td>463.36</td><td>28.67</td><td>28.67</td></tr><tr><td>experts</td><td>5339.65</td><td>5344.26</td><td>5107.71</td></tr><tr><td>combine</td><td>72.70</td><td>23.55</td><td>23.55</td></tr><tr><td>forward</td><td>5580.80</td><td>5470.21</td><td>5216.26</td></tr></table></div><p class="note">Stages are measured separately; their medians need not sum to forward latency.</p></details></section><section><h2>Validation and reproducibility</h2><pre>{
+  &quot;hardware&quot;: {
+    &quot;gpu&quot;: &quot;NVIDIA A100-SXM4-40GB&quot;,
+    &quot;compute_capability&quot;: &quot;8.0&quot;,
+    &quot;gpu_memory_bytes&quot;: 42405855232,
+    &quot;torch_version&quot;: &quot;2.11.0+cu130&quot;,
+    &quot;torch_cuda&quot;: &quot;13.0&quot;,
+    &quot;python&quot;: &quot;3.13.15&quot;,
+    &quot;nvidia_smi&quot;: &quot;NVIDIA A100-SXM4-40GB, 580.82.07, 40960 MiB&quot;,
+    &quot;utc_run_time&quot;: &quot;2026-10-13T01:25:25Z&quot;
+  },
+  &quot;validation&quot;: [
+    {
+      &quot;case_id&quot;: 0,
+      &quot;implementation&quot;: &quot;torch&quot;,
+      &quot;passed&quot;: true,
+      &quot;max_absolute_error&quot;: 0.015625,
+      &quot;relative_l2_error&quot;: 0.003167089307680726,
+      &quot;rtol&quot;: 0.03,
+      &quot;atol&quot;: 0.03,
+      &quot;relative_l2_limit&quot;: 0.02
+    },
+    {
+      &quot;case_id&quot;: 0,
+      &quot;implementation&quot;: &quot;cuda&quot;,
+      &quot;passed&quot;: true,
+      &quot;max_absolute_error&quot;: 0.015625,
+      &quot;relative_l2_error&quot;: 0.003167089307680726,
+      &quot;rtol&quot;: 0.03,
+      &quot;atol&quot;: 0.03,
+      &quot;relative_l2_limit&quot;: 0.02
+    },
+    {
+      &quot;case_id&quot;: 0,
+      &quot;implementation&quot;: &quot;cuda_fused&quot;,
+      &quot;passed&quot;: true,
+      &quot;max_absolute_error&quot;: 0.015625,
+      &quot;relative_l2_error&quot;: 0.003167108166962862,
+      &quot;rtol&quot;: 0.03,
+      &quot;atol&quot;: 0.03,
+      &quot;relative_l2_limit&quot;: 0.02
+    },
+    {
+      &quot;case_id&quot;: 1,
+      &quot;implementation&quot;: &quot;cuda&quot;,
+      &quot;passed&quot;: true,
+      &quot;max_absolute_error&quot;: 0.015625,
+      &quot;relative_l2_error&quot;: 0.002999215153977275,
+      &quot;rtol&quot;: 0.03,
+      &quot;atol&quot;: 0.03,
+      &quot;relative_l2_limit&quot;: 0.02
+    },
+    {
+      &quot;case_id&quot;: 1,
+      &quot;implementation&quot;: &quot;cuda_fused&quot;,
+      &quot;passed&quot;: true,
+      &quot;max_absolute_error&quot;: 0.015625,
+      &quot;relative_l2_error&quot;: 0.002999239368364215,
+      &quot;rtol&quot;: 0.03,
+      &quot;atol&quot;: 0.03,
+      &quot;relative_l2_limit&quot;: 0.02
+    },
+    {
+      &quot;case_id&quot;: 1,
+      &quot;implementation&quot;: &quot;torch&quot;,
+      &quot;passed&quot;: true,
+      &quot;max_absolute_error&quot;: 0.015625,
+      &quot;relative_l2_error&quot;: 0.002999209566041827,
+      &quot;rtol&quot;: 0.03,
+      &quot;atol&quot;: 0.03,
+      &quot;relative_l2_limit&quot;: 0.02
+    }
+  ],
+  &quot;source_hashes&quot;: {
+    &quot;bindings.cpp&quot;: &quot;d9f978571321886d1398be6b256ef43755104f5b45d78dbeb344fe7df732ba23&quot;,
+    &quot;dispatch.cu&quot;: &quot;e2f50bcac88371ce559398072bef0becc6938f71850fe77796aae8ea8f2c6171&quot;,
+    &quot;benchmark.py&quot;: &quot;a7de0709c338366b75d4d36ec4a79e8639457c23d9663ecf36fb4da975ccc7cd&quot;,
+    &quot;__main__.py&quot;: &quot;935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d&quot;,
+    &quot;experts.py&quot;: &quot;4f59bc2248e80ba42ac6c2811f6d18900adf21e4165b10219f2302f204cbe4cc&quot;,
+    &quot;__init__.py&quot;: &quot;3b1fc1d058da1ccba2b0113880af82e5a5a2a6afbcdb3c8bc742a0db8cdf4a79&quot;,
+    &quot;report.py&quot;: &quot;89ddd6d70b074e5a637afeec5b65274f1a80a95fab619f1705406660743a1e73&quot;,
+    &quot;ops.py&quot;: &quot;4fe6602b6523de01235d10092148903b83eaec074e0dd84556fd66ddad22cebc&quot;,
+    &quot;reference.py&quot;: &quot;22ac7b612d323e568231ac2771a3ef061cb692bce86b830981b272fd369fb985&quot;,
+    &quot;layer.py&quot;: &quot;f95d53fb8b8aa89f7fcc7f6d985a8a544f1e2c1342b7b81200fa117f85608b7d&quot;,
+    &quot;evidence.py&quot;: &quot;775b9d69648396592465af8ddc4780e2d238a29ca7a8ad0d8cd3e95c54718c37&quot;,
+    &quot;block_benchmark.py&quot;: &quot;b90dd8e6f6f1c98c07430ff47a477b2abb912adb486b9c56ebeccfbd4be45ea8&quot;,
+    &quot;demo.py&quot;: &quot;3dfbdfc91877f841f941a1ed98064fd204646e02709b57c4dd161e23c41534a6&quot;,
+    &quot;environment.py&quot;: &quot;63f4953ee3af6c1ba780cd74de16da7b2d23fa7e996370624321aa92391bcf4c&quot;,
+    &quot;validation.py&quot;: &quot;f049661c8330055600c465a969ab9464ee35bc67254a27dd559d1603004017a1&quot;,
+    &quot;block_report.py&quot;: &quot;5da83f1307c3919253b8c5c4b1de40cc61f992efb3f50eb5a37be4e1c9efc903&quot;,
+    &quot;workspace.py&quot;: &quot;b5339b876007aaa192940a334568d7ea027a4a3fc3a182f58d66d8e9ca80351d&quot;,
+    &quot;routing.py&quot;: &quot;04462b138a00d4477f35a924cfec22d3c0c770f92bb6c19fa6fdb6b52f1b2ebe&quot;,
+    &quot;profiling.py&quot;: &quot;ca002ffa396e68762e1cd95ce9bd7f67047a86cc69d2efa99659177d9a8115c1&quot;,
+    &quot;_extension.py&quot;: &quot;19fcbd903ab730d06ebf48134c0db1f0b155465afc44c57c4d620c4949a6f273&quot;,
+    &quot;_triton_gemm.py&quot;: &quot;bb22a2c7b4a13d9e208b7655aae1d355a8df6b1aa590c3426fbb91f7c22c39bf&quot;,
+    &quot;cli.py&quot;: &quot;fc4270b88c58310a743dd1e4d94f5cdce418e59fb686ccba01ef905a16cba4d3&quot;
+  }
+}</pre></section></main></body></html>

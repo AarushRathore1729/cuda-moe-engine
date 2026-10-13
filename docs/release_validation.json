@@ -1,0 +1,26 @@
+{
+  "checked_at_utc": "2026-10-13T01:30:47.566711+00:00",
+  "python": "3.12",
+  "pytorch": "2.11.0+cpu",
+  "pytest": {
+    "passed": 97,
+    "gpu_skipped": 39
+  },
+  "lint": "passed",
+  "wheel_and_sdist": "built successfully",
+  "installed_wheel_source_hashes_verified": 22,
+  "original_measured_package_sources": "all 22 unchanged",
+  "evidence": "quick 120, smoke 30, graph experiment 144, larger preset 30 rows verified; raw medians/p95/minima, source hashes and manifests verified; 36 original profiler GPU kernels",
+  "demo": {
+    "script_checks": 90,
+    "download": "matches embedded and archived JSON",
+    "browser_visual_check": "not completed: Chromium download unavailable"
+  },
+  "optional_gpu_experiments": {
+    "graph_replay_checks_passed": 24,
+    "larger_preset_oracle_comparisons_passed": 6,
+    "graph_median_ratio": 1.7359649579653869,
+    "larger_preset_eager_median_ratio": 1.064692397779477,
+    "larger_preset_graph_replay": "not requested"
+  }
+}

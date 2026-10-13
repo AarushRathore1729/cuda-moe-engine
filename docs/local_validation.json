@@ -1,0 +1,32 @@
+{
+  "checked_at_utc": "2026-10-13T00:18:06.418254+00:00",
+  "python": "3.12",
+  "pytorch": "2.11.0+cpu",
+  "pytest": {
+    "passed": 81,
+    "gpu_skipped": 39
+  },
+  "lint": "passed",
+  "offline_grouped_gemm": {
+    "triton": "3.6.0",
+    "target": "SM80",
+    "checks": [
+      {
+        "inner": 64,
+        "columns": 128,
+        "dtype": "BF16",
+        "ptx_bytes": 42189,
+        "cubin_bytes": 48736
+      },
+      {
+        "inner": 64,
+        "columns": 32,
+        "dtype": "BF16",
+        "ptx_bytes": 41140,
+        "cubin_bytes": 47072
+      }
+    ]
+  },
+  "gpu_status": "Expanded CUDA operators and full-forward performance have not been executed locally.",
+  "recorded_gpu_checkpoint": "benchmarks/a100/results.json contains the completed original A100 transport run."
+}
